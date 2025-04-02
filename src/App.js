@@ -1,19 +1,21 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import UserList from './components/UserList'; // Asegúrate de que la ruta sea correcta
 import Login from './components/Login';
-import UserList from './components/UserList';
-import CreateUser from './components/CreateUser';
+import CreateUser from './components/CreateUser';  // Importa el componente
 
-const App = () => {
+
+function App() {
   return (
     <Router>
-      <Switch>
-        <Route exact path="/" component={Login} />
-        <Route path="/users" component={UserList} />
-        <Route path="/create-user" component={CreateUser} />
-      </Switch>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/create-user" element={<CreateUser />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;

@@ -1,52 +1,87 @@
 import React, { useState } from 'react';
-import api from '../api';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CreateUser = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [error, setError] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rol, setRol] = useState('');
+    const [error, setError] = useState('');
 
-  const handleCreateUser = async () => {
-    try {
-      const response = await api.post('/login', { name, email, password, rol: role });
-      alert('Usuario creado');
-    } catch (err) {
-      setError('Error al crear el usuario');
-    }
-  };
+    const navigate = useNavigate();
 
-  return (
-    <div>
-      <h2>Crear Usuario</h2>
-      <input
-        type="text"
-        placeholder="Nombre"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <select onChange={(e) => setRole(e.target.value)} value={role}>
-        <option value="admin">Administrador</option>
-        <option value="usuario">Usuario</option>
-        <option value="gerente">Gerente</option>
-      </select>
-      <button onClick={handleCreateUser}>Crear Usuario</button>
-      {error && <p>{error}</p>}
-    </div>
-  );
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!nombre || !email || !password || !rol) {
+            setError('Por favor, complete todos los campos');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://18.117.157.132:3007/api/login', {
+                nombre,
+                email,
+                password,
+                rol,
+            });
+
+            console.log('Usuario creado:', response.data);
+
+            navigate('/login');
+
+        } catch (error) {
+            setError('Error al crear el usuario');
+            console.error(error.response ? error.response.data : error.message);
+        }
+    };
+
+    return (
+        <div className="Create-user-container">
+            <h2>Crear Usuario</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Nombre</label>
+                    <input
+                        type="text"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Contraseña</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Rol</label>
+                    <select value={rol} onChange={(e) => setRol(e.target.value)} required>
+                        <option value="">Selecciona un rol</option>
+                        <option value="admin">admin</option>
+                        <option value="user">user</option>
+                        <option value="manager">manager</option>
+                    </select>
+                </div>
+                {error && <div className="error">{error}</div>}
+                <button type="submit">Crear Usuario</button>
+            </form>
+        </div>
+    );
 };
 
 export default CreateUser;

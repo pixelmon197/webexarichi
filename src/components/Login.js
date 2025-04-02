@@ -1,43 +1,63 @@
-// src/components/Login.js
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import api from '../api';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const history = useHistory();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      const response = await api.post('/login', { email, password });
-      localStorage.setItem('token', response.data.token);  // Guardamos el token en el localStorage
-      history.push('/users');  // Redirigimos a la página de usuarios
-    } catch (err) {
-      setError('Credenciales incorrectas');
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  return (
-    <div>
-      <h2>Iniciar sesión</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin}>Iniciar sesión</button>
-      {error && <p>{error}</p>}
-    </div>
-  );
+        if (!email || !password) {
+            setError('Por favor, ingrese todos los campos.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://18.117.157.132:3007/api/login', {
+                email,
+                password,
+            });
+
+            const { token } = response.data;
+            localStorage.setItem('token', token);
+
+            window.location.href = '/users';
+        } catch (error) {
+            setError('Email o contraseña incorrectos.');
+        }
+    };
+
+    return (
+        <div className="login-container">
+            <h2>Iniciar sesión</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Contraseña</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                {error && <div className="error">{error}</div>}
+                <button type="submit">Iniciar sesión</button>
+            </form>
+            <Link to="/Create-user">Crear usuario</Link>
+        </div>
+    );
 };
 
 export default Login;
