@@ -14,7 +14,7 @@ const UserList = () => {
                     return;
                 }
 
-                const response = await axios.get('http://18.117.157.132:3007/api/users', {
+                const response = await axios.get('https://3.149.8.252:8443/api/users', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

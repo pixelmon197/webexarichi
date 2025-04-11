@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // Configuración base de la API
 const api = axios.create({
-  baseURL: 'http://18.117.157.132:3007', // Cambia esto por la URL de tu API en producción
-  headers: {
+  baseURL: 'https://3.149.8.252:8443', // Cambia esto por la URL de tu API en producción
+  headers: { 
     'Content-Type': 'application/json',
   },
 });
